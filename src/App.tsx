@@ -1,8 +1,17 @@
-import React from "react";
-import AppRouter from "./components/Router";
+import { authService } from "fb";
+import React, { useState } from "react";
+import AppRouter from "components/Router";
 
+export interface IsLoggedIn {
+  isLoggedIn: boolean;
+}
 function App() {
-  return <AppRouter />;
+  const user = authService.currentUser;
+
+  const [isLoggedIn, sestIsLoggedIn] =
+    useState<IsLoggedIn["isLoggedIn"]>(false);
+
+  return <AppRouter isLoggedIn={isLoggedIn} />;
 }
 
 export default App;
