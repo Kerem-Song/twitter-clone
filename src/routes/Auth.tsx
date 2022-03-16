@@ -1,7 +1,15 @@
-import React, { ChangeEvent, FormEvent, useState } from "react";
+import React, {
+  ChangeEvent,
+  FormEvent,
+  MouseEventHandler,
+  useState,
+} from "react";
 import {
   createUserWithEmailAndPassword,
+  GithubAuthProvider,
+  GoogleAuthProvider,
   signInWithEmailAndPassword,
+  signInWithPopup,
 } from "firebase/auth";
 import { authService } from "fb";
 
@@ -17,6 +25,20 @@ const Auth = () => {
 
   const handleToggleAccount = () => {
     setNewAccount((prevNewAccount) => !prevNewAccount);
+  };
+
+  const onSocialClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    const {
+      currentTarget: { name },
+    } = e;
+
+    if (name === "google") {
+      const provider = new GoogleAuthProvider();
+      await signInWithPopup(authService, provider);
+    } else if (name === "github") {
+      const provider = new GithubAuthProvider();
+      await signInWithPopup(authService, provider);
+    }
   };
 
   const onSubmit = async (e: FormEvent) => {
@@ -80,8 +102,12 @@ const Auth = () => {
         {newAccount ? "Sign In" : "Create New Account"}
       </span>
       <div>
-        <button>Continue with Google</button>
-        <button>Continue with Github</button>
+        <button name="google" onClick={(e) => onSocialClick(e)}>
+          Continue with Google
+        </button>
+        <button name="github" onClick={(e) => onSocialClick(e)}>
+          Continue with Github
+        </button>
       </div>
     </div>
   );
