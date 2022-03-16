@@ -1,17 +1,33 @@
 import { authService } from "fb";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import AppRouter from "components/Router";
+import { onAuthStateChanged } from "firebase/auth";
 
 export interface IsLoggedIn {
   isLoggedIn: boolean;
 }
 function App() {
-  const user = authService.currentUser;
+  const [init, setInit] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState<IsLoggedIn["isLoggedIn"]>(false);
 
-  const [isLoggedIn, sestIsLoggedIn] =
-    useState<IsLoggedIn["isLoggedIn"]>(false);
-
-  return <AppRouter isLoggedIn={isLoggedIn} />;
+  useEffect(() => {
+    onAuthStateChanged(authService, (user) => {
+      if (user) {
+        setIsLoggedIn(true);
+      } else {
+        setIsLoggedIn(false);
+      }
+      setInit(true);
+    });
+  }, []);
+  return (
+    <>
+      {init ? <AppRouter isLoggedIn={isLoggedIn} /> : "Initializing..."}
+      <footer>
+        &copy; {new Date().getFullYear()} twitter-clone by Kerem Song
+      </footer>
+    </>
+  );
 }
 
 export default App;
