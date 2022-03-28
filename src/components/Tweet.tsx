@@ -38,17 +38,21 @@ export const Tweet = ({ tweet, isOwner }: SnapshotData) => {
     <div>
       {isEdit ? (
         <>
-          <form onSubmit={onSubmit}>
-            <input
-              type="text"
-              placeholder="Edit your tweet"
-              value={newTweet}
-              required
-              onChange={onChange}
-            />
-            <input type="submit" value="update value" />
-          </form>
-          <button onClick={handleToggleEditing}>Cancel</button>
+          {isOwner && (
+            <>
+              <form onSubmit={onSubmit}>
+                <input
+                  type="text"
+                  placeholder="Edit your tweet"
+                  value={newTweet}
+                  required
+                  onChange={onChange}
+                />
+                <input type="submit" value="update value" />
+              </form>
+              <button onClick={handleToggleEditing}>Cancel</button>
+            </>
+          )}
         </>
       ) : (
         <>

@@ -20,9 +20,9 @@ export interface SnapshotData {
 }
 
 const Home = ({ user }: LoggedIn) => {
-  console.log("user", user);
   const [tweet, setTweet] = useState("");
   const [tweets, setTweets] = useState<SnapshotData[]>([]);
+  const [fileUrl, setFileUrl] = useState<string>();
 
   useEffect(() => {
     const q = query(collection(getFirestore(), "tweets"), orderBy("createdAt"));
@@ -43,6 +43,33 @@ const Home = ({ user }: LoggedIn) => {
 
   const onChange = ({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
     setTweet(value);
+  };
+
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    console.log("file change target: ", e.target.files);
+    const {
+      target: { files },
+    } = e;
+    const file = files && files[0];
+    const fileReader = new FileReader();
+
+    fileReader.onloadend = (finishedEvent: ProgressEvent<FileReader>) => {
+      console.log("finishedEvent", finishedEvent);
+      // const {
+      //   target: { result },
+      // } = finishedEvent;
+      const result = finishedEvent.target?.result;
+      if (result && typeof result === "string") {
+        setFileUrl(result);
+      }
+    };
+    if (file) {
+      fileReader.readAsDataURL(file);
+    }
+  };
+
+  const handleClearBtn = () => {
+    setFileUrl("");
   };
 
   const onSubmit = async (e: FormEvent) => {
@@ -70,7 +97,14 @@ const Home = ({ user }: LoggedIn) => {
           value={tweet}
           onChange={onChange}
         />
+        <input type="file" accept="image/*" onChange={handleFileChange} />
         <input type="submit" value="tweet" />
+        {fileUrl && (
+          <div>
+            <img src={fileUrl} alt="" width={50} height={50} />
+            <button onClick={handleClearBtn}>Clear</button>
+          </div>
+        )}
       </form>
       {tweets.map((tweet) => (
         <Tweet

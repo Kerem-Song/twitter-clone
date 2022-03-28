@@ -9,16 +9,13 @@ export interface LoggedIn {
 }
 function App() {
   const [init, setInit] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState<LoggedIn["isLoggedIn"]>(false);
+
   const [user, setUser] = useState<LoggedIn["user"]>();
 
   useEffect(() => {
     onAuthStateChanged(authService, (user) => {
       if (user) {
-        setIsLoggedIn(true);
         setUser(user);
-      } else {
-        setIsLoggedIn(false);
       }
       setInit(true);
     });
@@ -26,13 +23,10 @@ function App() {
   return (
     <>
       {init ? (
-        <AppRouter isLoggedIn={isLoggedIn} user={user} />
+        <AppRouter isLoggedIn={Boolean(user)} user={user} />
       ) : (
         "Initializing..."
       )}
-      <footer>
-        &copy; {new Date().getFullYear()} twitter-clone by Kerem Song
-      </footer>
     </>
   );
 }
