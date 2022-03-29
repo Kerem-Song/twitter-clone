@@ -1,14 +1,15 @@
 import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import { dbService } from "fb";
+import { storageService } from "fb";
 import {
   collection,
-  addDoc,
   DocumentData,
   getFirestore,
   query,
   orderBy,
   onSnapshot,
 } from "firebase/firestore";
+import { ref, uploadString } from "firebase/storage";
+import { v4 as uuidv4 } from "uuid";
 import { LoggedIn } from "../App";
 import { Tweet } from "components/Tweet";
 
@@ -74,15 +75,26 @@ const Home = ({ user }: LoggedIn) => {
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    try {
-      await addDoc(collection(dbService, "tweets"), {
-        text: tweet,
-        createdAt: Date.now(),
-        creatorId: user?.uid,
-      });
-    } catch (e) {
-      console.error("Error adding document: ", e);
+    const fileRef = ref(storageService, `${user?.uid}/${uuidv4()}`);
+    if (fileUrl) {
+      const res = uploadString(fileRef, fileUrl, "data_url").then(
+        (snapshot) => {
+          console.log("uploaded");
+        }
+      );
+
+      console.log("res:", res);
     }
+
+    // try {
+    //   await addDoc(collection(dbService, "tweets"), {
+    //     text: tweet,
+    //     createdAt: Date.now(),
+    //     creatorId: user?.uid,
+    //   });
+    // } catch (e) {
+    //   console.error("Error adding document: ", e);
+    // }
 
     setTweet("");
   };
