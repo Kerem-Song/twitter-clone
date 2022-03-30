@@ -1,18 +1,21 @@
 import React, { ChangeEvent, FormEvent, useState } from "react";
 import { SnapshotData } from "routes/Home";
 import { doc, deleteDoc, updateDoc } from "firebase/firestore";
-import { dbService } from "fb";
+import { ref, deleteObject } from "firebase/storage";
+import { dbService, storageService } from "fb";
 
 export const Tweet = ({ tweet, isOwner }: SnapshotData) => {
   const [isEdit, setIsEdit] = useState(false);
   const [newTweet, setNewTweet] = useState(tweet.text);
   const tweetTextRef = doc(dbService, "tweets", `${tweet.id}`);
+  const tweetRefFromUrl = ref(storageService, tweet.attachmentUrl);
 
   const handleDelete = async () => {
     const ok = window.confirm("Do you want to delete this tweet?");
     if (ok) {
       //del
       await deleteDoc(tweetTextRef);
+      await deleteObject(tweetRefFromUrl);
     }
   };
 
