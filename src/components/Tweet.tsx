@@ -57,6 +57,9 @@ export const Tweet = ({ tweet, isOwner }: SnapshotData) => {
       ) : (
         <>
           <h4>{tweet.text}</h4>
+          {tweet.attachmentUrl && (
+            <img src={tweet.attachmentUrl} alt="" width={50} height={50} />
+          )}
           {isOwner && (
             <>
               <button onClick={handleDelete}>Delete Tweet</button>
