@@ -14,7 +14,7 @@ import { TUser } from "../App";
 const AppRouter = ({ isLoggedIn, user }: TUser) => {
   return (
     <Router>
-      {isLoggedIn && <Navigation />}
+      {isLoggedIn && <Navigation user={user} />}
       <Routes>
         {isLoggedIn ? (
           <>
