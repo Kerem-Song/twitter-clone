@@ -11,7 +11,7 @@ import {
 } from "firebase/firestore";
 import { ref, uploadString, getDownloadURL } from "firebase/storage";
 import { v4 as uuidv4 } from "uuid";
-import { LoggedIn } from "../App";
+import { TUser } from "../App";
 import { Tweet } from "components/Tweet";
 
 export interface SnapshotData {
@@ -21,10 +21,10 @@ export interface SnapshotData {
   isOwner?: boolean;
 }
 
-const Home = ({ user }: LoggedIn) => {
+const Home = ({ user }: TUser) => {
   const [tweet, setTweet] = useState("");
   const [tweets, setTweets] = useState<SnapshotData[]>([]);
-  const [fileUrl, setFileUrl] = useState<string>();
+  const [fileUrl, setFileUrl] = useState<string>("");
 
   useEffect(() => {
     const q = query(collection(getFirestore(), "tweets"), orderBy("createdAt"));
@@ -57,9 +57,7 @@ const Home = ({ user }: LoggedIn) => {
 
     fileReader.onloadend = (finishedEvent: ProgressEvent<FileReader>) => {
       console.log("finishedEvent", finishedEvent);
-      // const {
-      //   target: { result },
-      // } = finishedEvent;
+
       const result = finishedEvent.target?.result;
       if (result && typeof result === "string") {
         setFileUrl(result);
