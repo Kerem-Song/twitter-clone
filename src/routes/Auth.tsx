@@ -1,9 +1,4 @@
-import React, {
-  ChangeEvent,
-  FormEvent,
-  MouseEventHandler,
-  useState,
-} from "react";
+import React, { ChangeEvent, FormEvent, useState } from "react";
 import {
   createUserWithEmailAndPassword,
   GithubAuthProvider,

@@ -1,8 +1,9 @@
-import { TUser } from "App";
 import React from "react";
+import { TUser } from "App";
 import { Link } from "react-router-dom";
 
-export const Navigation = ({ user }: TUser) => {
+export const Navigation = ({ userObj }: TUser) => {
+  const defaultName = userObj?.email?.split("@")[0];
   return (
     <nav>
       <ul>
@@ -10,7 +11,9 @@ export const Navigation = ({ user }: TUser) => {
           <Link to="/">Home</Link>
         </li>
         <li>
-          <Link to="/profile">My Profile</Link>
+          <Link to="/profile">
+            {userObj?.displayName ?? defaultName} 's Profile
+          </Link>
         </li>
       </ul>
     </nav>

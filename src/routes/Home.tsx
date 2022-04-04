@@ -21,7 +21,7 @@ export interface SnapshotData {
   isOwner?: boolean;
 }
 
-const Home = ({ user }: TUser) => {
+const Home = ({ userObj }: TUser) => {
   const [tweet, setTweet] = useState("");
   const [tweets, setTweets] = useState<SnapshotData[]>([]);
   const [fileUrl, setFileUrl] = useState<string>("");
@@ -75,7 +75,7 @@ const Home = ({ user }: TUser) => {
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
     let attachmentUrl = "";
-    const fileRef = ref(storageService, `${user?.uid}/${uuidv4()}`);
+    const fileRef = ref(storageService, `${userObj?.uid}/${uuidv4()}`);
     if (fileUrl) {
       const res = await uploadString(fileRef, fileUrl, "data_url");
 
@@ -86,7 +86,7 @@ const Home = ({ user }: TUser) => {
     const tweetObj = {
       text: tweet,
       createdAt: Date.now(),
-      creatorId: user?.uid,
+      creatorId: userObj?.uid,
       attachmentUrl,
     };
 
@@ -119,7 +119,7 @@ const Home = ({ user }: TUser) => {
         <Tweet
           key={tweet.id}
           tweet={tweet}
-          isOwner={tweet.creatorId === user?.uid}
+          isOwner={tweet.creatorId === userObj?.uid}
         />
       ))}
     </div>

@@ -1,29 +1,44 @@
-import { authService } from "fb";
 import React, { useEffect, useState } from "react";
+import { authService } from "fb";
 import AppRouter from "components/Router";
 import { onAuthStateChanged, User } from "firebase/auth";
 
 export interface TUser {
   isLoggedIn?: boolean;
-  user?: User;
+  userObj?: User;
+  refreshUser?: () => void;
+  displayName?: string | null;
+  uid?: string;
 }
+
 function App() {
   const [init, setInit] = useState(false);
 
-  const [user, setUser] = useState<TUser["user"]>();
+  const [userObj, setUser] = useState<User>();
 
   useEffect(() => {
-    onAuthStateChanged(authService, (user) => {
-      if (user) {
-        setUser(user);
+    onAuthStateChanged(authService, (userObj) => {
+      if (userObj) {
+        setUser(userObj);
       }
       setInit(true);
     });
-  }, []);
+  }, [userObj]);
+
+  const refreshUser = () => {
+    if (userObj) {
+      setUser({ ...userObj, displayName: userObj.displayName });
+    }
+  };
+
   return (
     <>
       {init ? (
-        <AppRouter isLoggedIn={Boolean(user)} user={user} />
+        <AppRouter
+          refreshUser={refreshUser}
+          isLoggedIn={Boolean(userObj)}
+          userObj={userObj}
+        />
       ) : (
         "Initializing..."
       )}

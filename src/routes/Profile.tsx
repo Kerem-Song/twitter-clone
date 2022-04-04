@@ -5,23 +5,23 @@ import { useNavigate } from "react-router-dom";
 import { TUser } from "App";
 import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
 
-const Profile = ({ user }: TUser) => {
-  const [newDisplayName, setNewDisplayName] = useState(user?.displayName);
+const Profile = ({ refreshUser, userObj }: TUser) => {
+  const [newDisplayName, setNewDisplayName] = useState(userObj?.displayName);
   useEffect(() => {
     const getMyTweets = async () => {
       const q = query(
         collection(dbService, "tweets"),
-        where("creatorId", "==", user?.uid),
+        where("creatorId", "==", userObj?.uid),
         orderBy("createdAt")
       );
-
+      console.log("query", q);
       const querySnapshot = await getDocs(q);
       querySnapshot.forEach((doc) => {
         console.log(doc.id, "=>", doc.data());
       });
     };
     getMyTweets();
-  }, [user]);
+  }, [userObj]);
 
   const navigate = useNavigate();
 
@@ -44,13 +44,14 @@ const Profile = ({ user }: TUser) => {
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (user && user.displayName !== newDisplayName) {
-      await updateProfile(user, {
+    if (userObj && userObj.displayName !== newDisplayName) {
+      await updateProfile(userObj, {
         displayName: newDisplayName,
       })
         .then(() => {
           // Profile updated!
           console.log("profile updated");
+          refreshUser && refreshUser();
         })
         .catch((err) => {
           console.log("update err", err);
@@ -65,7 +66,7 @@ const Profile = ({ user }: TUser) => {
           type="text"
           placeholder="Display name"
           onChange={handleChange}
-          value={newDisplayName ?? "User"}
+          value={newDisplayName ?? ""}
         />
         <input type="submit" value="Update Profile" />
       </form>
