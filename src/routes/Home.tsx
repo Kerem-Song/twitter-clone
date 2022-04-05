@@ -1,5 +1,4 @@
-import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import { dbService, storageService } from "fb";
+import React, { useEffect, useState } from "react";
 import {
   collection,
   DocumentData,
@@ -7,12 +6,10 @@ import {
   query,
   orderBy,
   onSnapshot,
-  addDoc,
 } from "firebase/firestore";
-import { ref, uploadString, getDownloadURL } from "firebase/storage";
-import { v4 as uuidv4 } from "uuid";
 import { TUser } from "../App";
 import { Tweet } from "components/Tweet";
+import TweetFactory from "components/TweetFactory";
 
 export interface SnapshotData {
   tweet: DocumentData;
@@ -22,9 +19,9 @@ export interface SnapshotData {
 }
 
 const Home = ({ userObj }: TUser) => {
-  const [tweet, setTweet] = useState("");
+  // const [tweet, setTweet] = useState("");
   const [tweets, setTweets] = useState<SnapshotData[]>([]);
-  const [fileUrl, setFileUrl] = useState<string>("");
+  // const [fileUrl, setFileUrl] = useState<string>("");
 
   useEffect(() => {
     const q = query(collection(getFirestore(), "tweets"), orderBy("createdAt"));
@@ -43,62 +40,62 @@ const Home = ({ userObj }: TUser) => {
     };
   }, []);
 
-  const onChange = ({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
-    setTweet(value);
-  };
+  // const onChange = ({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
+  //   setTweet(value);
+  // };
 
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    console.log("file change target: ", e.target.files);
-    const {
-      target: { files },
-    } = e;
-    const file = files && files[0];
-    const fileReader = new FileReader();
+  // const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+  //   console.log("file change target: ", e.target.files);
+  //   const {
+  //     target: { files },
+  //   } = e;
+  //   const file = files && files[0];
+  //   const fileReader = new FileReader();
 
-    fileReader.onloadend = (finishedEvent: ProgressEvent<FileReader>) => {
-      console.log("finishedEvent", finishedEvent);
+  //   fileReader.onloadend = (finishedEvent: ProgressEvent<FileReader>) => {
+  //     console.log("finishedEvent", finishedEvent);
 
-      const result = finishedEvent.target?.result;
-      if (result && typeof result === "string") {
-        setFileUrl(result);
-      }
-    };
-    if (file) {
-      fileReader.readAsDataURL(file);
-    }
-  };
+  //     const result = finishedEvent.target?.result;
+  //     if (result && typeof result === "string") {
+  //       setFileUrl(result);
+  //     }
+  //   };
+  //   if (file) {
+  //     fileReader.readAsDataURL(file);
+  //   }
+  // };
 
-  const handleClearBtn = () => {
-    setFileUrl("");
-  };
+  // const handleClearBtn = () => {
+  //   setFileUrl("");
+  // };
 
-  const onSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    let attachmentUrl = "";
-    const fileRef = ref(storageService, `${userObj?.uid}/${uuidv4()}`);
-    if (fileUrl) {
-      const res = await uploadString(fileRef, fileUrl, "data_url");
+  // const onSubmit = async (e: FormEvent) => {
+  //   e.preventDefault();
+  //   let attachmentUrl = "";
+  //   const fileRef = ref(storageService, `${userObj?.uid}/${uuidv4()}`);
+  //   if (fileUrl) {
+  //     const res = await uploadString(fileRef, fileUrl, "data_url");
 
-      attachmentUrl = await getDownloadURL(res.ref);
-      console.log("res:", res);
-    }
+  //     attachmentUrl = await getDownloadURL(res.ref);
+  //     console.log("res:", res);
+  //   }
 
-    const tweetObj = {
-      text: tweet,
-      createdAt: Date.now(),
-      creatorId: userObj?.uid,
-      attachmentUrl,
-    };
+  //   const tweetObj = {
+  //     text: tweet,
+  //     createdAt: Date.now(),
+  //     creatorId: userObj?.uid,
+  //     attachmentUrl,
+  //   };
 
-    await addDoc(collection(dbService, "tweets"), tweetObj);
+  //   await addDoc(collection(dbService, "tweets"), tweetObj);
 
-    setTweet("");
-    setFileUrl("");
-  };
+  //   setTweet("");
+  //   setFileUrl("");
+  // };
 
   return (
     <div>
-      <form onSubmit={onSubmit}>
+      {/* <form onSubmit={onSubmit}>
         <input
           type="text"
           placeholder="what's on your mind?"
@@ -114,7 +111,8 @@ const Home = ({ userObj }: TUser) => {
             <button onClick={handleClearBtn}>Clear</button>
           </div>
         )}
-      </form>
+      </form> */}
+      <TweetFactory userObj={userObj} />
       {tweets.map((tweet) => (
         <Tweet
           key={tweet.id}
