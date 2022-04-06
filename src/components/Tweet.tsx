@@ -3,6 +3,8 @@ import { SnapshotData } from "routes/Home";
 import { doc, deleteDoc, updateDoc } from "firebase/firestore";
 import { ref, deleteObject } from "firebase/storage";
 import { dbService, storageService } from "fb";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash, faPencilAlt } from "@fortawesome/free-solid-svg-icons";
 
 export const Tweet = ({ tweet, isOwner }: SnapshotData) => {
   const [isEdit, setIsEdit] = useState(false);
@@ -38,36 +40,42 @@ export const Tweet = ({ tweet, isOwner }: SnapshotData) => {
   };
 
   return (
-    <div>
+    <div className="tweet">
       {isEdit ? (
         <>
           {isOwner && (
             <>
-              <form onSubmit={onSubmit}>
+              <form className="container tweetEdit" onSubmit={onSubmit}>
                 <input
+                  className="formInput"
                   type="text"
                   placeholder="Edit your tweet"
                   value={newTweet}
                   required
+                  autoFocus
                   onChange={onChange}
                 />
-                <input type="submit" value="update value" />
+                <input className="formBtn" type="submit" value="update Tweet" />
               </form>
-              <button onClick={handleToggleEditing}>Cancel</button>
+              <span onClick={handleToggleEditing} className="formBtn cancelBtn">
+                Cancel
+              </span>
             </>
           )}
         </>
       ) : (
         <>
           <h4>{tweet.text}</h4>
-          {tweet.attachmentUrl && (
-            <img src={tweet.attachmentUrl} alt="" width={50} height={50} />
-          )}
+          {tweet.attachmentUrl && <img src={tweet.attachmentUrl} alt="" />}
           {isOwner && (
-            <>
-              <button onClick={handleDelete}>Delete Tweet</button>
-              <button onClick={handleToggleEditing}>Edit Tweet</button>
-            </>
+            <div className="tweet__actions">
+              <span onClick={handleDelete}>
+                <FontAwesomeIcon icon={faTrash} />
+              </span>
+              <span onClick={handleToggleEditing}>
+                <FontAwesomeIcon icon={faPencilAlt} />
+              </span>
+            </div>
           )}
         </>
       )}

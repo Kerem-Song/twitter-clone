@@ -94,7 +94,7 @@ const Home = ({ userObj }: TUser) => {
   // };
 
   return (
-    <div>
+    <div className="container">
       {/* <form onSubmit={onSubmit}>
         <input
           type="text"
@@ -113,13 +113,15 @@ const Home = ({ userObj }: TUser) => {
         )}
       </form> */}
       <TweetFactory userObj={userObj} />
-      {tweets.map((tweet) => (
-        <Tweet
-          key={tweet.id}
-          tweet={tweet}
-          isOwner={tweet.creatorId === userObj?.uid}
-        />
-      ))}
+      <div className="tweetList">
+        {tweets.map((tweet) => (
+          <Tweet
+            key={tweet.id}
+            tweet={tweet}
+            isOwner={tweet.creatorId === userObj?.uid}
+          />
+        ))}
+      </div>
     </div>
   );
 };
