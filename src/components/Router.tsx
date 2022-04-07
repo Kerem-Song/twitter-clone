@@ -13,7 +13,7 @@ import { TUser } from "../App";
 
 const AppRouter = ({ refreshUser, isLoggedIn, userObj }: TUser) => {
   return (
-    <Router>
+    <Router basename={process.env.PUBLIC_URL}>
       {isLoggedIn && <Navigation userObj={userObj} />}
       <div
         style={{

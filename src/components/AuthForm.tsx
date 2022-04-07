@@ -56,6 +56,7 @@ const AuthForm = () => {
     <>
       <form className="container" onSubmit={onSubmit}>
         <input
+          className="authInput"
           name="email"
           type="email"
           placeholder="Email"
